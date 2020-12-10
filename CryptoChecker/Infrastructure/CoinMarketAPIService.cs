@@ -71,6 +71,7 @@ namespace CryptoChecker.Infrastructure
                     var response = await httpResponse.Content.ReadAsStringAsync();
                     var result = JObject.Parse(response);
 
+                    //using JObject to pick currency in a nested JSON
                     var objResult = result["data"][inputValue]["quote"].ToString().Replace("\r\n", "");
 
                     var res = JsonConvert.DeserializeObject<QuoteWrapper>(objResult);
