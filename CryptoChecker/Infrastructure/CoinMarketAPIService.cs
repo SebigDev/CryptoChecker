@@ -2,6 +2,7 @@
 using CryptoChecker.Utility;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,7 +54,7 @@ namespace CryptoChecker.Infrastructure
             return currencyRates;
         }
 
-        public async Task<Quote> GetQuoteForValuedCryptoCurrency(string inputValue)
+        public async Task<QuoteWrapper> GetQuoteForValuedCryptoCurrency(string inputValue)
         {
             //Configure Headers with API Keys and Accepts
             _httpClient.DefaultRequestHeaders.Add("X-CMC_PRO_API_KEY", _secureSettings.CoinMarketAPIKey);
@@ -68,8 +69,12 @@ namespace CryptoChecker.Infrastructure
                 if (httpResponse.IsSuccessStatusCode)//if status code is 200
                 {
                     var response = await httpResponse.Content.ReadAsStringAsync();
-                    var res = JsonConvert.DeserializeObject<QuoteWrapper>(response);
-                    return res.Data.Btc.Quote;
+                    var result = JObject.Parse(response);
+
+                    var objResult = result["data"][inputValue]["quote"].ToString().Replace("\r\n", "");
+
+                    var res = JsonConvert.DeserializeObject<QuoteWrapper>(objResult);
+                    return res;
       
                 }
 

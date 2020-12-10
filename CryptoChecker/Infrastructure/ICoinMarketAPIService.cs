@@ -8,7 +8,7 @@ namespace CryptoChecker.Infrastructure
 {
     public interface ICoinMarketAPIService
     {
-        Task<Quote> GetQuoteForValuedCryptoCurrency(string inputValue);
+        Task<QuoteWrapper> GetQuoteForValuedCryptoCurrency(string inputValue);
         Task<ExchangeRate> PerformConversionOnQuotes(string baseCurrency);
 
         Task<List<ConvertedCurrencyRate>> GetExchangeRatesForCurrency(string cryptoCode);

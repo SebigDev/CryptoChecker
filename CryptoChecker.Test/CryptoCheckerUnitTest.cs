@@ -14,7 +14,7 @@ namespace CryptoChecker.Test
     {
         Mock<ICoinMarketAPIService> _service;
         List<ConvertedCurrencyRate> _convertedCurrencies;
-        Quote _quote;
+        QuoteWrapper _quote;
         ExchangeRate exchangeRate;
     
 
@@ -22,7 +22,7 @@ namespace CryptoChecker.Test
         {
             _service = new Mock<ICoinMarketAPIService>();
             _convertedCurrencies = new List<ConvertedCurrencyRate>();
-            _quote = new Quote
+            _quote = new QuoteWrapper
             {
                 Usd = new Usd
                 {
