@@ -7,14 +7,18 @@ const CryptoCheckerHome = () => {
             quoteStatus: false
         });
     const [quotes, setQuotes] = useState([]);
+    const [fetching, setFetching] = useState(false);
 
     const getCryptoQuotes = (e) => {
         e.preventDefault();
-        fetch("/api/CryptoChecker/GetCryptoCurrencyQuotes?inputvalues?=" + quoteInput)
+        setFetching(true);
+        fetch(`/api/CryptoChecker/GetCryptoCurrencyQuotes/${quoteInput.toUpperCase()}`)
             .then(res => res.json())
             .then(resp => {
                 setQuotes(resp);
+                setFetching(false)
             }).catch(err => {
+                setFetching(false);
                 console.log(err)
             })
     }
@@ -27,26 +31,54 @@ const CryptoCheckerHome = () => {
     }
    
     const { quoteInput } = quoteSearch
-    console.log(quoteInput)
     return (
-      
-        <div classname="container">
-            <h3>CHECK YOUR CRYPTO QUOTES</h3>
-            <p>Welcome To Crypto Currency Quotes Checker:</p>
-            <div className="jumbotron">
+     <>
+        <div className="container">
+            <h4>CHECK YOUR CRYPTOCURRENCY EXCHANGE RATE</h4>
+            <div className="jumbotron">  
                 <form className="form" onSubmit={getCryptoQuotes}>
-                    <input type="text"
-                        className="form_control"
-                        defaultValue={quoteInput}
-                        placeholder="enter cryptocurrency code"
-                        onChange={handleChange}
-                        name="quoteInput"
-                    />
-                    &nbsp;
-                    <button type="submit">GET QUOTES</button>
+                    <div className="row">
+                        <div className="col-md-4">
+                            <input type="text"
+                                className="form-control"
+                                defaultValue={quoteInput}
+                                placeholder="Enter cryptocurrency code"
+                                onChange={handleChange}
+                                name="quoteInput"
+                            />
+                        </div>
+                            <div className="col-md-4">
+                                <button type="submit"
+                                    className="btn btn-outline-secondary"
+                                    disabled={fetching}
+                                >
+                                    {fetching ? "Fetching..." : "Get Exchange Rate"}
+                                </button>
+                        </div>
+                    </div>
                 </form>
+             </div>
             </div>
-        </div>
+            <div className="row">
+                <div className="col-md-2"></div>
+                <div className="col-md-8">
+                    {fetching ? <p style={{ marginLeft: '45%' }}>Loading....</p> : quotes.length === 0 ? null : <ul className="list-group">
+                        <>
+                            <h4 style={{ marginLeft: '20%' }}>Currency Exchange Rate for {quoteInput.toUpperCase()}</h4>
+                            {quotes.length && quotes.map((quote, index) => (
+
+                                <li className="list-group-item d-flex justify-content-between align-items-center" key={index}>
+                                    {quote.currencyName}
+                                    <span className="badge badge-outline-secondary">{quote.exchangeValue}</span>
+                                </li>
+                            ))}
+                        </>
+                    </ul>}
+                </div>
+                <div className="col-md-2"></div>
+             </div>
+
+      </> 
     );
 }
 

@@ -10,6 +10,8 @@ namespace CryptoChecker
         public string CoinMarketAPIKey { get; set; }
         public string CoinMarketAPIBaseUrl { get; set; }
         public string CoinMarketAPIQuotes { get; set; }
+        public string ExchangeRateService { get; set; }
+        public string CurrenciesToDisplay { get; set; }
 
         public string CoinMarketConversionEndpoint => CoinMarketAPIBaseUrl + CoinMarketAPIQuotes;
     }
