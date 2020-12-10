@@ -20,7 +20,7 @@
      * *I have also had the opportunity of monitoring a production application using Dynatrace.*
      
 * **Question 4**
-    * *The latest technical book I read is _The Digital transformation Playbook_ David Rogers, I have also attented a virtual _DevOpsNG_ conferenence where I learnt about Site       Reliablity Engineering, which has to do with building and maintaining reliable systems, implementing gradual changes by leveraging on tools and automation processes.*
+    * *The latest technical book I read was **The Digital transformation Playbook** by David Rogers, I have also attended a virtual **DevOpsNG** conference where I learnt about Site Reliability Engineering, which has to do with building and maintaining reliable systems, implementing gradual changes by leveraging on tools and automation processes.*
     
 * **Question 5**
     * *I think about this technical assessment as a means to evaluate one's creative thinking, one's approach to solving technical problems and adptation to solutions.*
