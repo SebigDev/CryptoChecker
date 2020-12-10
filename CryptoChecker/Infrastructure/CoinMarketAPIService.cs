@@ -36,6 +36,7 @@ namespace CryptoChecker.Infrastructure
                 var rateResponse = await this.PerformConversionOnQuotes(BaseCurrency);
                 if(rateResponse != null)
                 {
+                    
                     foreach(var rate in rateResponse.Rates)
                     {
                         if (currencies.Contains(rate.Key))
@@ -71,6 +72,8 @@ namespace CryptoChecker.Infrastructure
                     return res.Data.Btc.Quote;
       
                 }
+
+                //log the failure to console
                 var responseFailed  = await httpResponse.Content.ReadAsStringAsync();
                 Console.WriteLine("Failed Response=>{0}", responseFailed);
                 return null;

@@ -15,7 +15,12 @@ const CryptoCheckerHome = () => {
         fetch(`/api/CryptoChecker/GetCryptoCurrencyQuotes/${quoteInput.toUpperCase()}`)
             .then(res => res.json())
             .then(resp => {
-                setQuotes(resp);
+                if (resp.status) {
+                    setQuotes(resp.data);
+                } else {
+                    alert(resp.message)
+                    setQuotes(resp.data)
+                }
                 setFetching(false)
             }).catch(err => {
                 setFetching(false);
@@ -42,7 +47,7 @@ const CryptoCheckerHome = () => {
                             <input type="text"
                                 className="form-control"
                                 defaultValue={quoteInput}
-                                placeholder="Enter cryptocurrency code"
+                                placeholder="Enter Cryptocurrency code (Eg. BTC)"
                                 onChange={handleChange}
                                 name="quoteInput"
                             />
@@ -77,7 +82,7 @@ const CryptoCheckerHome = () => {
                 </div>
                 <div className="col-md-2"></div>
              </div>
-
+            <br/>
       </> 
     );
 }
