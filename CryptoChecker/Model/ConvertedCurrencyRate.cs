@@ -8,6 +8,13 @@ namespace CryptoChecker.Model
     public class ConvertedCurrencyRate
     {
         public string CurrencyName { get; set; }
-        public double ExchangeValue  { get; set; } 
+        public double ExchangeValue { get; set; }
+
+        public ConvertedCurrencyRate(string curr, double exchange)
+        {
+            CurrencyName = curr; ExchangeValue = exchange;
+        }
+
+
     }
 }

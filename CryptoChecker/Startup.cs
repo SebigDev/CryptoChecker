@@ -12,8 +12,8 @@ namespace CryptoChecker
 {
     public class Startup
     {
-        private const string _defaultCorsPolicyName = "localhost";
-        public Startup(IConfiguration configuration)
+        private const string DefaultCorsPolicyName = "localhost";
+        public Startup(IConfiguration configuration) 
         {
             Configuration = configuration;
         }
@@ -26,7 +26,7 @@ namespace CryptoChecker
             services.AddControllersWithViews();
             services.AddOptions();
             services.Configure<SecureSettings>(Configuration.GetSection("SecureSettings"));
-            services.AddHttpClient<ICoinMarketAPIService, CoinMarketAPIService>();
+            services.AddHttpClient<ICoinMarketApiService, CoinMarketApiService>();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -37,7 +37,7 @@ namespace CryptoChecker
             // Configure CORS for UI
             services.AddCors(options =>
             {
-                options.AddPolicy(_defaultCorsPolicyName, p =>
+                options.AddPolicy(DefaultCorsPolicyName, p =>
                 {
                     p.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
                 });
@@ -58,7 +58,7 @@ namespace CryptoChecker
                 app.UseHsts();
             }
 
-            app.UseCors(_defaultCorsPolicyName);
+            app.UseCors(DefaultCorsPolicyName);
             app.UseCors(builder => builder.AllowAnyHeader()
                                   .AllowAnyMethod()
                                   .AllowAnyOrigin()

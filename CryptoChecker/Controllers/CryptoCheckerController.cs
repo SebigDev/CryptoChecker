@@ -12,36 +12,36 @@ namespace CryptoChecker.Controllers
     [Route("api/[controller]/[action]")]
     public class CryptoCheckerController : ControllerBase 
     {
-        private readonly ICoinMarketAPIService _coinMarketAPIService;
-        public CryptoCheckerController(ICoinMarketAPIService coinMarketAPIService)
+        private readonly ICoinMarketApiService _coinMarketApiService; 
+        public CryptoCheckerController(ICoinMarketApiService coinMarketApiService)
         {
-            _coinMarketAPIService = coinMarketAPIService ?? throw new ArgumentNullException(nameof(coinMarketAPIService));
+            _coinMarketApiService = coinMarketApiService ?? throw new ArgumentNullException(nameof(coinMarketApiService));
         }
 
         [HttpGet]
-        [Route("{inputvalues}")]
-        public async Task<IActionResult> GetCryptoCurrencyQuotes(string inputvalues)
+        [Route("{inputValues}")]
+        public async Task<IActionResult> GetCryptoCurrencyQuotes(string inputValues)
         {
-            if (string.IsNullOrEmpty(inputvalues))
+            if (string.IsNullOrEmpty(inputValues))
             {
                 return BadRequest("Input value cannot be null or empty.");
             }
-            var responseModel = new ResponseModel();
-            var _callResponse  = await _coinMarketAPIService.GetExchangeRatesForCurrency(inputvalues);
-            if (!_callResponse.Any())
+            ResponseModel responseModel;
+            var callResponse  = await _coinMarketApiService.GetExchangeRatesForCurrency(inputValues);
+            if (!callResponse.Any())
             {
                 responseModel = new ResponseModel
                 {
-                    Message = $"No response returned for the {inputvalues} entered. ",
-                    Data = _callResponse,
+                    Message = $"No response returned for the {inputValues} entered. ",
+                    Data = callResponse,
                     Status = false,
                 };
                 return BadRequest(responseModel);
             }
-             responseModel = new ResponseModel
+            responseModel = new ResponseModel
             {
-                Message = "Successfull",
-                Data = _callResponse,
+                Message = "Successful",
+                Data = callResponse,
                 Status = true,
             };
             return Ok(responseModel);

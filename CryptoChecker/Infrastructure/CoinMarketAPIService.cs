@@ -11,13 +11,13 @@ using System.Threading.Tasks;
 
 namespace CryptoChecker.Infrastructure
 {
-    public class CoinMarketAPIService : ICoinMarketAPIService
+    public class CoinMarketApiService : ICoinMarketApiService 
     {
         private readonly HttpClient _httpClient;
         private readonly SecureSettings _secureSettings;
         private const string BaseCurrency = "USD";
 
-        public CoinMarketAPIService(HttpClient httpClient, IOptions<SecureSettings> secureSettings)
+        public CoinMarketApiService(HttpClient httpClient, IOptions<SecureSettings> secureSettings)
         {
             _httpClient = httpClient;
             _secureSettings = secureSettings.Value;
@@ -25,32 +25,21 @@ namespace CryptoChecker.Infrastructure
 
         public async Task<List<ConvertedCurrencyRate>> GetExchangeRatesForCurrency(string cryptoCode)
         {
-            List<ConvertedCurrencyRate> currencyRates = new List<ConvertedCurrencyRate>(); 
+            var currencyRates = new List<ConvertedCurrencyRate>(); 
 
-            if (string.IsNullOrEmpty(cryptoCode)) { throw new ArgumentException(nameof(cryptoCode)); };
+            if (string.IsNullOrEmpty(cryptoCode)) { throw new ArgumentNullException(nameof(cryptoCode)); }
 
             var currencies = _secureSettings.CurrenciesToDisplay.Split(",").ToList();
 
             var quote = await GetQuoteForValuedCryptoCurrency(cryptoCode);
-            if(quote  != null)
-            {
-                var rateResponse = await this.PerformConversionOnQuotes(BaseCurrency);
-                if(rateResponse != null)
-                {
-                    
-                    foreach(var rate in rateResponse.Rates)
-                    {
-                        if (currencies.Contains(rate.Key))
-                        {
-                            var convertedRate = CurrencyValueConverter.ResolveExchangerate(rate.Value, quote.Usd.Price);
-                            var currRate = new ConvertedCurrencyRate { CurrencyName = rate.Key, ExchangeValue= convertedRate };
-                            currencyRates.Add(currRate);
-                        }
-                    }
-                    return currencyRates;
-                }
-                return currencyRates;
-            }
+            if (quote == null) return currencyRates;
+            var rateResponse = await this.PerformConversionOnQuotes(BaseCurrency);
+            if (rateResponse == null || rateResponse.Rates == null) return currencyRates;
+            currencyRates.AddRange(from rate in rateResponse.Rates
+                where currencies.Contains(rate.Key)
+                let convertedRate = CurrencyValueConverter.ResolveExchangeRate(rate.Value, quote.Usd.Price)
+                let currentRate = new ConvertedCurrencyRate(rate.Key, convertedRate)
+                select currentRate);
             return currencyRates;
         }
 
@@ -60,7 +49,7 @@ namespace CryptoChecker.Infrastructure
             _httpClient.DefaultRequestHeaders.Add("X-CMC_PRO_API_KEY", _secureSettings.CoinMarketAPIKey);
             _httpClient.DefaultRequestHeaders.Add("Accepts", "application/json");
             _httpClient.BaseAddress = new Uri(_secureSettings.CoinMarketAPIBaseUrl);
-            string url = $"{_secureSettings.CoinMarketAPIQuotes}?symbol={inputValue}";
+            var url = $"{_secureSettings.CoinMarketAPIQuotes}?symbol={inputValue}";
            
             try
             {
@@ -70,13 +59,10 @@ namespace CryptoChecker.Infrastructure
                 {
                     var response = await httpResponse.Content.ReadAsStringAsync();
                     var result = JObject.Parse(response);
-
-                    //using JObject to pick currency in a nested JSON
-                    var objResult = result["data"][inputValue]["quote"].ToString().Replace("\r\n", "");
+                    var objResult = ObjectResult(inputValue, result);
 
                     var res = JsonConvert.DeserializeObject<QuoteWrapper>(objResult);
                     return res;
-      
                 }
 
                 //log the failure to console
@@ -86,10 +72,15 @@ namespace CryptoChecker.Infrastructure
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex?.Message);
+                Console.WriteLine(ex.Message);
                 return null;
             }
-           
+        }
+
+        private static string ObjectResult(string inputValue, JObject result)
+        {
+            //using JObject to pick currency in a nested JSON
+            return result["data"][inputValue]["quote"].ToString().Replace("\r\n", "");
         }
 
         public async Task<ExchangeRate> PerformConversionOnQuotes(string baseCurrency)

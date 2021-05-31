@@ -12,7 +12,7 @@ namespace CryptoChecker.Test
 {
     public class CryptoCheckerUnitTest
     {
-        Mock<ICoinMarketAPIService> _service;
+        Mock<ICoinMarketApiService> _service;
         List<ConvertedCurrencyRate> _convertedCurrencies;
         QuoteWrapper _quote;
         ExchangeRate exchangeRate;
@@ -20,7 +20,7 @@ namespace CryptoChecker.Test
 
         public CryptoCheckerUnitTest()
         {
-            _service = new Mock<ICoinMarketAPIService>();
+            _service = new Mock<ICoinMarketApiService>();
             _convertedCurrencies = new List<ConvertedCurrencyRate>();
             _quote = new QuoteWrapper
             {
@@ -72,7 +72,7 @@ namespace CryptoChecker.Test
             var btcRate = 900;
 
             //act
-            var actual  = CurrencyValueConverter.ResolveExchangerate(rate,btcRate);
+            var actual  = CurrencyValueConverter.ResolveExchangeRate(rate,btcRate);
 
             //Assert
             Assert.Equal(450,actual);

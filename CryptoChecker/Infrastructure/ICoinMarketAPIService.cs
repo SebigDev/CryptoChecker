@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CryptoChecker.Infrastructure
 {
-    public interface ICoinMarketAPIService
+    public interface ICoinMarketApiService
     {
         Task<QuoteWrapper> GetQuoteForValuedCryptoCurrency(string inputValue);
         Task<ExchangeRate> PerformConversionOnQuotes(string baseCurrency);

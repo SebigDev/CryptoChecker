@@ -84,7 +84,7 @@ const CryptoCheckerHome = () => {
              </div>
             <br/>
       </> 
-    );
+    ); 
 }
 
 export default CryptoCheckerHome;
